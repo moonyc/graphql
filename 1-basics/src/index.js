@@ -6,15 +6,45 @@
  * Scalar Types: String, Boolean, Int, Float, ID (unique to graphql)
  * A scalar type is a type that stores a single value 
  */
+// Demo User Data
+const users = [{
+    id: '1',
+    name: 'Lyra',
+    email: 'lyra@lyrathesnake.com'
+},{
+    id: '2',
+    name: 'Pan',
+    email: 'pan@panthesnake.com'
+},{
+    id: '3',
+    name: 'Marjorie',
+    email: 'marjorie@marjoriethesnake.com'
+}]
+// Demo Post Data
+const posts = [{
+   id: '1',
+   title: '1',
+   body: '1',
+   published: true
+},{
+    id: '2',
+    title: '2',
+    body: '2',
+    published: true
+ },{
+    id: '3',
+    title: '3',
+    body: '3',
+    published: false
+ }]
 
 const schema = createSchema({
     typeDefs: /*Type definition */`
    type Query {
-     greeting(name: String, position: String): String!
-     grades: [Int!]!
+     posts(query: String): [Post!]!
+     users(query: String): [User!]!
      me: User!
      firstPost: Post!
-     add(numbers: [Float!]!): Float!
     }
     
     type User {
@@ -32,23 +62,23 @@ const schema = createSchema({
 `,
 resolvers: {
     Query: {
-      greeting(parent, args, ctx, info) {
-        if (args.name, args.position) {
-            return `Hello ${args.name}, you're my favorite ${args.position.toLowerCase()}`
-        }
-        return 'Hello' 
+      users(parent, args, ctx, info) {
+           if(!args.query) {
+              return users
+           }
+           return users.filter((user) => {
+            return user.name.toLowerCase().includes(args.query.toLowerCase())
+           })
       },
-      add(parent, args, ctx, info) {
-        if (args.numbers.length === 0) {
-            return 0
-        }
-
-        return args.numbers.reduce((accumulator, currentValue) => {
-           return accumulator + currentValue
-        })
-      },
-      grades(parent, args, ctx, info) {
-        return [99, 80, 93]
+      posts(parent, args, ctx, info) {
+         if(!args.query) {
+            return posts
+         }
+         return posts.filter((post) => {
+            const isTitleMatch = post.title.toLowerCase().includes(args.query.toLowerCase())
+            const isBodyMatch = post.body.toLowerCase().includes(args.query.toLowerCase())
+            return isTitleMatch || isBodyMatch
+         })
       },
       me() {
         return {
