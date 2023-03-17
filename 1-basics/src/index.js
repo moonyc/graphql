@@ -1,31 +1,33 @@
  import { createServer } from 'node:http'
  import { createSchema, createYoga } from 'graphql-yoga'
  
-
-
+/**
+ * 5 Main types:
+ * Scalar Types: String, Boolean, Int, Float, ID (unique to graphql)
+ * A scalar type is a type that stores a single value 
+ */
 const schema = createSchema({
     typeDefs: /*Type definition */`
    type Query {
-      hello: String!
-      name: String!
-      location: String!
-      bio: String!
-   }
+     me: User!
+    }
+    
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+    }
 `,
 resolvers: {
     Query: {
-       hello() {
-        return 'This is my first query!'
-       },
-       name() {
-        return 'Sasha'
-       },
-       location() {
-        return 'Turin'
-       },
-       bio() {
-        return 'I like cats'
-       }
+      me() {
+        return {
+            id: 'gattini12345',
+            name: 'sasha',
+            email: 'sasha@gattini.com'
+        }
+      }
     }
  }
 })
