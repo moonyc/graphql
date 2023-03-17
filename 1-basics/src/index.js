@@ -9,7 +9,10 @@
 const schema = createSchema({
     typeDefs: /*Type definition */`
    type Query {
+     greeting(name: String, position: String): String!
      me: User!
+     firstPost: Post!
+     add(a: Float!, b: Float!): Float!
     }
     
     type User {
@@ -18,15 +21,42 @@ const schema = createSchema({
         email: String!
         age: Int
     }
+    type Post {
+        id: ID!
+        title: String!
+        body: String!
+        published: Boolean!
+    }
 `,
 resolvers: {
     Query: {
+      greeting(parent, args, ctx, info) {
+        if (args.name, args.position) {
+            return `Hello ${args.name}, you're my favorite ${args.position.toLowerCase()}`
+        }
+        return 'Hello' 
+      },
+      add(parent, args, ctx, info) {
+        
+            return args.a + args.b
+       
+        
+      },
       me() {
         return {
             id: 'gattini12345',
             name: 'sasha',
             email: 'sasha@gattini.com'
         }
+      },
+      firstPost() {
+        return {
+         id: 'firstpost12345',
+         title: 'Beware!',
+         body: 'Sasha The Cat is online again!',
+         published: true
+        }
+
       }
     }
  }
